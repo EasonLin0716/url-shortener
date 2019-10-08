@@ -5,12 +5,19 @@ A simple website which shortens your input url
 1. Input your website
 2. Click shorten!
 3. Get the shortened link
+4. You can click the word URL Shortener to return to / anytime
 
 ## environment set up
 1. Node.js
 2. MongoDB
 
 ## get started
+
+### Heroku link
+https://rocky-woodland-44533.herokuapp.com/
+
+### Or download to your computer
+
 1. clone me at 
 ```
 https://github.com/EasonLin0716/url-shortener.git
