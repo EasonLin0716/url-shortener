@@ -9,7 +9,7 @@ const bodyParser = require('body-parser')
 const randomGenerator = require('./public/javascripts/randomGenerator')
 
 /* -----db connecting----- */
-mongoose.connect('mongodb://localhost/url-shortener', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/url-shortener', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
 const db = mongoose.connection
 db.on('error', () => {
   console.log('mongodb error!')
