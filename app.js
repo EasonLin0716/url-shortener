@@ -28,19 +28,37 @@ app.use(methodOverride('_method'))
 app.use(flash())
 
 /* -----route setting----- */
+let createLinkSuccess = false
+
 app.get('/', (req, res) => {
-  res.render('index')
+  createLinkSuccess = false
+  res.render('index', { createLinkSuccess })
 })
 
 app.post('/', (req, res) => {
   console.log(req.body.link)
-  const urls = new Urls({
-    link: req.body.link,
-    shortenLink: randomGenerator(5)
-  }).save(err => {
+
+  Urls.findOne({ link: req.body.link }, (err, url) => {
     if (err) return console.error(err)
-    res.redirect('/')
+    if (url) {
+      createLinkSuccess = true
+      res.render('index', { createLinkSuccess, shortenLink: url.shortenLink })
+    } else {
+      const urls = new Urls({
+        link: req.body.link,
+        shortenLink: randomGenerator(5)
+      }).save((err, url) => {
+        if (err) return console.error(err)
+        console.log(url)
+        createLinkSuccess = true
+        res.render('index', { createLinkSuccess, shortenLink: url.shortenLink })
+      })
+    }
   })
+
+
+
+
 })
 
 app.listen(process.env.PORT || 3000, () => {
