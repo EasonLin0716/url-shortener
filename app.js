@@ -27,7 +27,7 @@ app.use(flash())
 
 /* -----route setting----- */
 app.get('/', (req, res) => {
-  res.send('Hello World')
+  res.render('index')
 })
 
 app.listen(process.env.PORT || 3000, () => {
