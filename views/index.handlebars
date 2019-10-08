@@ -1,5 +1,6 @@
 {{#if createLinkSuccess}}
-<h1>Link shortening successful! Visit your website at <a href="/">localhost:3000/{{{shortenLink}}}</a></h1>
+<h1>Link shortening successful! Visit your website at <a href={{{shortenLink}}}>localhost:3000/{{{shortenLink}}}</a>
+</h1>
 {{else}}
 <form action="/" method="POST">
   <input type="url" name="link">

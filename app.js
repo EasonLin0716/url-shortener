@@ -37,7 +37,6 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   console.log(req.body.link)
-
   Urls.findOne({ link: req.body.link }, (err, url) => {
     if (err) return console.error(err)
     if (url) {
@@ -55,10 +54,17 @@ app.post('/', (req, res) => {
       })
     }
   })
+})
 
-
-
-
+app.get('/:id', (req, res) => {
+  Urls.findOne({ shortenLink: req.params.id }, (err, url) => {
+    if (err) return console.error(err)
+    if (!url) {
+      res.render('linkFailure', { failureLink: req.params.id })
+    } else {
+      res.redirect(`${url.link}`)
+    }
+  })
 })
 
 app.listen(process.env.PORT || 3000, () => {
