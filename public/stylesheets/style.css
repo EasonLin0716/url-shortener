@@ -2,3 +2,12 @@
   width: 240px;
   height: 240px;
 }
+
+#home {
+  color: #fff;
+  text-decoration: none;
+}
+
+#home:hover {
+  color: rgb(0, 100, 255);
+}

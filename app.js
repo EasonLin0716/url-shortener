@@ -36,6 +36,10 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
+  // prevent postman attack
+  const urlReg = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm
+  if (!urlReg.test(req.body.link)) return res.send('This website is not valid')
+
   console.log(req.body.link)
   Urls.findOne({ link: req.body.link }, (err, url) => {
     if (err) return console.error(err)
@@ -60,11 +64,16 @@ app.get('/:id', (req, res) => {
   Urls.findOne({ shortenLink: req.params.id }, (err, url) => {
     if (err) return console.error(err)
     if (!url) {
+      // if user type wrong link will warn
       res.render('linkFailure', { failureLink: req.params.id })
     } else {
       res.redirect(`${url.link}`)
     }
   })
+})
+
+app.get('*', (req, res) => {
+  res.redirect('/')
 })
 
 app.listen(process.env.PORT || 3000, () => {
