@@ -2,7 +2,7 @@ const Urls = require('../../models/urls')
 const randomGenerator = require('./randomGenerator')
 
 
-function urlChecker(shortenLink) {
+function urlChecker(shortenLinkIsExist) {
   return new Promise((resolve, reject) => {
     Url
       .findOne({ shortenLink: shortenLink })

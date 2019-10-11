@@ -56,8 +56,8 @@ app.post('/', (req, res) => {
       let shortenLinkIsExist = true
       while (shortenLinkIsExist) {
         (async () => {
-          shortenLinkIsExist = await urlChecker(shortenLink)
-          return shortenLink
+          shortenLinkIsExist = await urlChecker(shortenLinkIsExist)
+          return shortenLinkIsExist
         })()
       }
 
