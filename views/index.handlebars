@@ -8,5 +8,7 @@
     placeholder="please input your website...(e.g. https://www.google.com)">
   <button type="submit" class="btn btn-lg btn-primary mt-1">Shorten!</button>
 </form>
+{{#if numOfShortUrlUsed}}
 <h3>Totally {{{numOfShortUrlUsed}}} urls had been shortened into!</h3>
+{{/if}}
 {{/if}}

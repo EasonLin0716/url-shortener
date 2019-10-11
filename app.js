@@ -19,6 +19,10 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 const Urls = require('./models/urls')
+let numOfShortUrlUsed = 0
+Urls.find({}, (err, urls) => {
+  numOfShortUrlUsed = urls.length
+})
 
 /* -----middleware setting----- */
 app.use(express.static('public'))
@@ -32,11 +36,7 @@ app.use(flash())
 let createLinkSuccess = false
 
 
-app.get('/', async (req, res) => {
-  let numOfShortUrlUsed = 0
-  await Urls.find({}, (err, urls) => {
-    numOfShortUrlUsed = urls.length
-  })
+app.get('/', (req, res) => {
   createLinkSuccess = false
   res.render('index', { createLinkSuccess, numOfShortUrlUsed })
 })
@@ -70,6 +70,7 @@ app.post('/', (req, res) => {
       }).save((err, url) => {
         if (err) return console.error(err)
         console.log(url)
+        numOfShortUrlUsed += 1
         createLinkSuccess = true
         res.render('index', { createLinkSuccess, shortenLink: url.shortenLink, baseUrl })
       })
