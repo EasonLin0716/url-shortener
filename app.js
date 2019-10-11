@@ -44,23 +44,23 @@ app.post('/', (req, res) => {
   if (!urlReg.test(req.body.link)) return res.send('This website is not valid')
   console.log(req.body.link)
   const baseUrl = `${req.protocol}://${req.headers.host}/`
-  Urls.findOne({ link: req.body.link }, (err, url) => {
+  Urls.findOne({ link: req.body.link }, async (err, url) => {
     if (err) return console.error(err)
     // 如果使用者輸入的網址已存在，會從資料庫回傳別人已發送過的短網址
     if (url) {
       createLinkSuccess = true
       res.render('index', { createLinkSuccess, shortenLink: url.shortenLink, baseUrl })
     } else {
-
       let shortenLink = randomGenerator(5)
-      let shortenLinkIsExist = true
+      let shortenLinkIsExist = await urlChecker(shortenLink)
       while (shortenLinkIsExist) {
-        (async () => {
-          shortenLinkIsExist = await urlChecker(shortenLinkIsExist)
-          return shortenLinkIsExist
-        })()
+        // 如果隨機產生的短網址已存在，會重新產生新的
+        shortenLink = randomGenerator(5)
+        console.log(shortenLinkIsExist)
+        shortenLinkIsExist = await urlChecker(shortenLink)
       }
 
+      // 儲存連結至資料庫
       const urls = new Urls({
         link: req.body.link,
         shortenLink: shortenLink
