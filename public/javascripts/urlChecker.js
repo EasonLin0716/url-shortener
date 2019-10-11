@@ -4,7 +4,7 @@ const randomGenerator = require('./randomGenerator')
 
 function urlChecker(shortenLinkIsExist) {
   return new Promise((resolve, reject) => {
-    Url
+    Urls
       .findOne({ shortenLink: shortenLink })
       .exec((err, url) => {
         if (err) reject(err)
