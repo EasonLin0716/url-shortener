@@ -4,11 +4,14 @@ const Schema = mongoose.Schema
 const urlSchema = new Schema({
   link: {
     type: String,
+    unique: true,
     required: true
   },
 
   shortenLink: {
-    type: String
+    type: String,
+    unique: true,
+    required: true
   }
 })
 
