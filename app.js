@@ -7,6 +7,7 @@ const exphbs = require('express-handlebars')
 const flash = require('connect-flash')
 const bodyParser = require('body-parser')
 const randomGenerator = require('./public/javascripts/randomGenerator')
+const urlChecker = require('./public/javascripts/urlChecker')
 
 /* -----db connecting----- */
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/url-shortener', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
@@ -30,32 +31,39 @@ app.use(flash())
 /* -----route setting----- */
 let createLinkSuccess = false
 
+
 app.get('/', (req, res) => {
   createLinkSuccess = false
   res.render('index', { createLinkSuccess })
 })
 
+
 app.post('/', (req, res) => {
-  // prevent postman attack
+  // 若使用者沒有輸入內容，就按下了送出鈕，需要防止表單送出並提示使用者
   const urlReg = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm
   if (!urlReg.test(req.body.link)) return res.send('This website is not valid')
   console.log(req.body.link)
   const baseUrl = `${req.protocol}://${req.headers.host}/`
-  // let shortenLink = randomGenerator(5)
-  // Urls.findOne({ shortenLink: shortenLink }, (err, url) => {
-  //   if (url) {
-  //     shortenLink = randomGenerator(5)
-  //   }
-  // })
   Urls.findOne({ link: req.body.link }, (err, url) => {
     if (err) return console.error(err)
+    // 如果使用者輸入的網址已存在，會從資料庫回傳別人已發送過的短網址
     if (url) {
       createLinkSuccess = true
       res.render('index', { createLinkSuccess, shortenLink: url.shortenLink, baseUrl })
     } else {
+
+      let shortenLink = randomGenerator(5)
+      let shortenLinkIsExist = true
+      while (shortenLinkIsExist) {
+        (async () => {
+          shortenLinkIsExist = await urlChecker(shortenLink)
+          return shortenLink
+        })()
+      }
+
       const urls = new Urls({
         link: req.body.link,
-        shortenLink: randomGenerator(5)
+        shortenLink: shortenLink
       }).save((err, url) => {
         if (err) return console.error(err)
         console.log(url)
@@ -65,6 +73,7 @@ app.post('/', (req, res) => {
     }
   })
 })
+
 
 app.get('/:id', (req, res) => {
   Urls.findOne({ shortenLink: req.params.id }, (err, url) => {
@@ -78,9 +87,12 @@ app.get('/:id', (req, res) => {
   })
 })
 
+
 app.get('*', (req, res) => {
   res.redirect('/')
 })
+
+
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('app.js is running')
