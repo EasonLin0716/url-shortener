@@ -21,7 +21,7 @@ db.once('open', () => {
 const Urls = require('./models/urls')
 let numOfShortUrlUsed = 0
 Urls.find({}, (err, urls) => {
-  numOfShortUrlUsed = urls.length
+  numOfShortUrlUsed += urls.length
 })
 
 /* -----middleware setting----- */
