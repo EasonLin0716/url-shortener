@@ -32,9 +32,13 @@ app.use(flash())
 let createLinkSuccess = false
 
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+  let numOfShortUrlUsed = 0
+  await Urls.find({}, (err, urls) => {
+    numOfShortUrlUsed = urls.length
+  })
   createLinkSuccess = false
-  res.render('index', { createLinkSuccess })
+  res.render('index', { createLinkSuccess, numOfShortUrlUsed })
 })
 
 
@@ -56,7 +60,6 @@ app.post('/', (req, res) => {
       while (shortenLinkIsExist) {
         // 如果隨機產生的短網址已存在，會重新產生新的
         shortenLink = randomGenerator(5)
-        console.log(shortenLinkIsExist)
         shortenLinkIsExist = await urlChecker(shortenLink)
       }
 
