@@ -39,13 +39,19 @@ app.post('/', (req, res) => {
   // prevent postman attack
   const urlReg = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/gm
   if (!urlReg.test(req.body.link)) return res.send('This website is not valid')
-
   console.log(req.body.link)
+  const baseUrl = `${req.protocol}://${req.headers.host}/`
+  // let shortenLink = randomGenerator(5)
+  // Urls.findOne({ shortenLink: shortenLink }, (err, url) => {
+  //   if (url) {
+  //     shortenLink = randomGenerator(5)
+  //   }
+  // })
   Urls.findOne({ link: req.body.link }, (err, url) => {
     if (err) return console.error(err)
     if (url) {
       createLinkSuccess = true
-      res.render('index', { createLinkSuccess, shortenLink: url.shortenLink })
+      res.render('index', { createLinkSuccess, shortenLink: url.shortenLink, baseUrl })
     } else {
       const urls = new Urls({
         link: req.body.link,
@@ -54,7 +60,7 @@ app.post('/', (req, res) => {
         if (err) return console.error(err)
         console.log(url)
         createLinkSuccess = true
-        res.render('index', { createLinkSuccess, shortenLink: url.shortenLink })
+        res.render('index', { createLinkSuccess, shortenLink: url.shortenLink, baseUrl })
       })
     }
   })

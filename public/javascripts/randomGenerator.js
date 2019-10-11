@@ -1,3 +1,3 @@
 module.exports = (num) => {
-  return Math.random().toString(16).slice(-num)
+  return Math.random().toString(32).slice(-num)
 }
